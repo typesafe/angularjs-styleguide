@@ -17,16 +17,32 @@
 
   - Declare modules in the `/js/src` folder
   - Declare module components in their respective folders in a subfolder matching the module name:
-    - `/js/src/_app_/controllers`
-    - `/js/src/_app_/directives`
-    - `/js/src/_app_/filters`
-    - `/js/src/_app_/services`
+    - `/js/src/app/controllers`
+    - `/js/src/_app/directives`
+    - `/js/src/app/filters`
+    - `/js/src/app/services`
 
+### Modules
+
+Modules are declare in their own file in the `/js/src` folder. Besides their declaration, this file should only contain the module configuration (`module.config`) and initialization (`module.run`) code.
+
+  ```javascript
+  // /js/src/app.ts
+  var appModule = angular.module('app', ['ngRoute', 'ui', 'account', 'sales']);
+
+  appModule.config(['$routeProvider', ($routeProvider) => {
+
+        $routeProvider.mapRoute('home', '/', {
+            templateUrl: '/templates/app/home-page',
+            controller: 'HomePageController',
+            resolve: {
+                sales: ['$sales', $sales => $sales.getSales()]
+            }
+        });
+    }]);
+  ```
 
 ## Single Responsibility
-
-### Rule of 1 
-###### [Style [Y001](#style-y001)]
 
   - Define 1 component per file.
 
