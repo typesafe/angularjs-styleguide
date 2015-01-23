@@ -40,63 +40,31 @@ Modules are declare in their own file in the `/js/src` folder. Besides their dec
             }
         });
     }]);
+  
+   appModule.run(['$rootScope', function ($rootScope) {
+   // init code goes here
+   }]);
   ```
+### Module Components
 
-## Single Responsibility
-
-  - Define 1 component per file.
-
-  The following example defines the `app` module and its dependencies, defines a controller, and defines a factory all in the same file.
+- Define only a single component per file in their corresponding module folder.
+- Declare components using an IIFE.
 
   ```javascript
-  /* avoid */
-  angular
-      .module('app', ['ngRoute'])
-      .controller('SomeController', SomeController)
-      .factory('someFactory', someFactory);
-    
-  function SomeController() { }
+  // /js/src/account/controllers/login-overlay.ts
+  (function (accountModule) {
 
-  function someFactory() { }
+    accountModule.controller('LoginOverlayController', ['$scope', '$session', function ($scope, $session) {
+        ...
+    }]);
+
+  })(angular.module("account"));
   ```
 
-  The same components are now separated into their own files.
 
-  ```javascript
-  /* recommended */
-
-  // app.module.js
-  angular
-      .module('app', ['ngRoute']);
-  ```
-
-  ```javascript
-  /* recommended */
-
-  // someController.js
-  angular
-      .module('app')
-      .controller('SomeController', SomeController);
-
-  function SomeController() { }
-  ```
-
-  ```javascript
-  /* recommended */
-
-  // someFactory.js
-  angular
-      .module('app')
-      .factory('someFactory', someFactory);
-    
-  function someFactory() { }
-  ```
-
-**[Back to top](#table-of-contents)**
 
 ## IIFE
 ### JavaScript Closures
-###### [Style [Y010](#style-y010)]
 
   - Wrap AngularJS components in an Immediately Invoked Function Expression (IIFE). 
 
@@ -104,88 +72,17 @@ Modules are declare in their own file in the `/js/src` folder. Besides their dec
 
   *Why?*: When your code is minified and bundled into a single file for deployment to a production server, you could have collisions of variables and many global variables. An IIFE protects you against both of these by providing variable scope for each file.
 
-  ```javascript
-  /* avoid */
-  // logger.js
-  angular
-      .module('app')
-      .factory('logger', logger);
-
-  // logger function is added as a global variable  
-  function logger() { }
-
-  // storage.js
-  angular
-      .module('app')
-      .factory('storage', storage);
-
-  // storage function is added as a global variable  
-  function storage() { }
-  ```
-
-  ```javascript
-  /**
-   * recommended 
-   *
-   * no globals are left behind 
-   */
-
-  // logger.js
-  (function() {
-      'use strict';
-
-      angular
-          .module('app')
-          .factory('logger', logger);
-
-      function logger() { }
-  })();
-
-  // storage.js
-  (function() {
-      'use strict';
-
-      angular
-          .module('app')
-          .factory('storage', storage);
-
-      function storage() { }
-  })();
-  ```
-
   - Note: For brevity only, the rest of the examples in this guide may omit the IIFE syntax. 
 
   - Note: IIFE's prevent test code from reaching private members like regular expressions or helper functions which are often good to unit test directly on their own. However you can test these through accessible members or by exposing them through their own component. For example placing helper functions, regular expressions or constants in their own factory or constant.
 
-**[Back to top](#table-of-contents)**
-
 ## Modules
 
-### Avoid Naming Collisions
-###### [Style [Y020](#style-y020)]
-
-  - Use unique naming conventions with separators for sub-modules. 
-
-  *Why?*: Unique names help avoid module name collisions. Separators help define modules and their submodule hierarchy. For example `app` may be your root module while `app.dashboard` and `app.users` may be modules that are used as dependencies of `app`. 
-
 ### Definitions (aka Setters)
-###### [Style [Y021](#style-y021)]
 
   - Declare modules without a variable using the setter syntax. 
 
   *Why?*: With 1 component per file, there is rarely a need to introduce a variable for the module.
-  
-  ```javascript
-  /* avoid */
-  var app = angular.module('app', [
-      'ngAnimate',
-      'ngRoute',
-      'app.shared',
-      'app.dashboard'
-  ]);
-  ```
-
-  Instead use the simple setter syntax.
 
   ```javascript
   /* recommended */
