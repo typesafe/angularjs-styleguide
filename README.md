@@ -2,23 +2,33 @@
 
 ## Naming Conventions
 
-  - Use hyphenated file names: `app.ts`, `sales.ts`, `account.ts`, `reset-password.ts`
-  - Controllers:
-    - PascalCase
-    - `Controller` suffx (but not in the file name)
-  - Services
-    - camelCase
-    - `$` prefix (e.g. $sales, $session)
-  - All remaining compents (modules, filters, directives)
-    - camelCase
-    - no suffix, no prefix
+### File Names
 
-## Folder Structure
+- Use hyphenated file names: `app.ts`, `sales.ts`, `account.ts`, `reset-password.ts`
+- Do not include pre- or suffixes in file names.
+
+### Controllers
+
+- PascalCase e.g. ResetPasswordController
+- Use a `Controller` suffix (but not in file name)
+
+### Services
+  
+- camelCase
+- Prefix sevices with `$` (e.g. $sales, $session), this avoids name clashes with route parameters.
+
+### Remaining components (modules, filters, directives)
+
+- All remaining compents 
+- camelCase
+- no suffix, no prefix
+
+### Folder Structure
 
   - Declare modules in the `/js/src` folder
   - Declare module components in their respective folders in a subfolder matching the module name:
     - `/js/src/app/controllers`
-    - `/js/src/_app/directives`
+    - `/js/src/app/directives`
     - `/js/src/app/filters`
     - `/js/src/app/services`
 
@@ -45,6 +55,7 @@ Modules are declare in their own file in the `/js/src` folder. Besides their dec
    // init code goes here
    }]);
   ```
+  
 ### Module Components
 
 - Define only a single component per file in their corresponding module folder.
@@ -61,9 +72,8 @@ Modules are declare in their own file in the `/js/src` folder. Besides their dec
   })(angular.module("account"));
   ```
 
-
-
 ## IIFE
+
 ### JavaScript Closures
 
   - Wrap AngularJS components in an Immediately Invoked Function Expression (IIFE).
@@ -83,17 +93,15 @@ Modules are declare in their own file in the `/js/src` folder. Besides their dec
 
   *Why?*: When your code is minified and bundled into a single file for deployment to a production server, you could have collisions of variables and many global variables. An IIFE protects you against both of these by providing variable scope for each file.
 
-  - Note: For brevity only, the rest of the examples in this guide may omit the IIFE syntax. 
-
   - Note: IIFE's prevent test code from reaching private members like regular expressions or helper functions which are often good to unit test directly on their own. However you can test these through accessible members or by exposing them through their own component. For example placing helper functions, regular expressions or constants in their own factory or constant.
 
 ## Controllers
 
 ### controllerAs View Syntax
 
-  - Use the [`controllerAs`](http://www.johnpapa.net/do-you-like-your-angular-controllers-with-or-without-sugar/) syntax over the `classic controller with $scope` syntax. 
-
-  *Why?*: Controllers are constructed, "newed" up, and provide a single new instance, and the `controllerAs` syntax is closer to that of a JavaScript constructor than the `classic $scope syntax`. 
+  - Consider using the [`controllerAs`](http://www.johnpapa.net/do-you-like-your-angular-controllers-with-or-without-sugar/) syntax over the `classic controller with $scope` syntax.
+  - Alternatively, add a "view model" (e.g. `$scope.account = {}`) variable to `$scope` that aggregates all model values.
+  - Avoid adding simple values to `$scope` directly (e.g. `$scope.email = 'foo@bar.com';`)
 
   *Why?*: It promotes the use of binding to a "dotted" object in the View (e.g. `customer.name` instead of `name`), which is more contextual, easier to read, and avoids any reference issues that may occur without "dotting".
 
